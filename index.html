@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Momentum — интерактивный трекер привычек с понятной аналитикой и AI-рекомендациями."
+    />
+    <meta name="theme-color" content="#17211a" />
+    <title>Momentum — Habit Dashboard</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Перейти к содержанию</a>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Основная навигация">
+        <a class="brand" href="#overview" aria-label="Momentum — на главную">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>
+            <strong>Momentum</strong>
+            <small>habit dashboard</small>
+          </span>
+        </a>
+
+        <nav class="sidebar-nav">
+          <p class="nav-caption">ПРОСТРАНСТВО</p>
+          <button class="nav-link is-active" type="button" data-scroll="overview">
+            <svg aria-hidden="true"><use href="#icon-grid" /></svg>
+            Обзор
+          </button>
+          <button class="nav-link" type="button" data-scroll="habits">
+            <svg aria-hidden="true"><use href="#icon-check" /></svg>
+            Привычки
+            <span class="nav-count" id="habit-count">0</span>
+          </button>
+          <button class="nav-link" type="button" data-scroll="analytics">
+            <svg aria-hidden="true"><use href="#icon-chart" /></svg>
+            Аналитика
+          </button>
+          <button class="nav-link" type="button" data-scroll="ai-coach">
+            <svg aria-hidden="true"><use href="#icon-spark" /></svg>
+            AI-коуч
+          </button>
+        </nav>
+
+        <div class="sidebar-note">
+          <div class="sidebar-note-icon" aria-hidden="true">
+            <svg><use href="#icon-shield" /></svg>
+          </div>
+          <p><strong>Ваши данные — ваши</strong></p>
+          <span>Привычки хранятся только в этом браузере.</span>
+        </div>
+
+        <div class="profile-card">
+          <span class="avatar" aria-hidden="true">АШ</span>
+          <span class="profile-copy">
+            <strong>Алекс</strong>
+            <small>Личный профиль</small>
+          </span>
+          <button class="icon-button icon-button-dark" id="reset-menu-button" type="button" aria-label="Сбросить демо-данные" title="Сбросить демо-данные">
+            <svg aria-hidden="true"><use href="#icon-refresh" /></svg>
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content" id="main-content">
+        <header class="topbar">
+          <div class="title-block">
+            <p class="eyebrow" id="today-label">Сегодня</p>
+            <h1>Добрый вечер, Алекс <span aria-hidden="true">👋</span></h1>
+            <p>Маленькие действия. Видимый прогресс.</p>
+          </div>
+
+          <div class="topbar-actions">
+            <span class="save-status" id="save-status" role="status">
+              <span class="status-dot" aria-hidden="true"></span>
+              Сохранено локально
+            </span>
+            <button class="icon-button" id="theme-toggle" type="button" aria-label="Переключить тему" title="Переключить тему">
+              <svg aria-hidden="true"><use href="#icon-moon" /></svg>
+            </button>
+            <button class="button button-primary" id="add-habit-button" type="button">
+              <svg aria-hidden="true"><use href="#icon-plus" /></svg>
+              <span>Новая привычка</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="hero-card" id="overview" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <span class="hero-kicker">ЕЖЕДНЕВНЫЙ РИТМ</span>
+            <h2 id="hero-title">Сегодня вы уже ближе к цели</h2>
+            <p id="hero-message">Отметьте выполненные привычки — прогресс обновится мгновенно.</p>
+            <div class="hero-actions">
+              <button class="button button-light" type="button" data-scroll="habits">
+                Отметить привычки
+                <svg aria-hidden="true"><use href="#icon-arrow" /></svg>
+              </button>
+              <span class="hero-streak" id="hero-streak">🔥 Серия: 0 дней</span>
+            </div>
+          </div>
+          <div class="daily-progress" aria-label="Прогресс за сегодня">
+            <svg class="progress-ring" viewBox="0 0 148 148" aria-hidden="true">
+              <circle class="progress-ring-track" cx="74" cy="74" r="61" />
+              <circle class="progress-ring-value" id="today-progress-ring" cx="74" cy="74" r="61" />
+            </svg>
+            <div class="progress-ring-label">
+              <strong id="today-progress-value">0%</strong>
+              <span>сегодня</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="toolbar" aria-label="Фильтры dashboard">
+          <div class="segmented-control" id="range-filter" aria-label="Период аналитики">
+            <button type="button" data-range="7" class="is-active">7 дней</button>
+            <button type="button" data-range="30">30 дней</button>
+            <button type="button" data-range="90">90 дней</button>
+          </div>
+          <div class="category-filter" id="category-filter">
+            <span>Категория</span>
+            <select id="category-select" aria-label="Фильтр по категории">
+              <option value="all">Все привычки</option>
+              <option value="health">Здоровье</option>
+              <option value="focus">Фокус</option>
+              <option value="growth">Развитие</option>
+              <option value="balance">Баланс</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Ключевые показатели">
+          <article class="metric-card">
+            <div class="metric-icon metric-icon-green"><svg aria-hidden="true"><use href="#icon-target" /></svg></div>
+            <div class="metric-heading"><span>Выполнение</span><small id="rate-delta">—</small></div>
+            <strong class="metric-value" id="overall-rate">0%</strong>
+            <p>за выбранный период</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon metric-icon-orange"><svg aria-hidden="true"><use href="#icon-flame" /></svg></div>
+            <div class="metric-heading"><span>Текущая серия</span><small>личный ритм</small></div>
+            <strong class="metric-value" id="current-streak">0 <em>дней</em></strong>
+            <p id="streak-caption">Начните сегодня</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon metric-icon-blue"><svg aria-hidden="true"><use href="#icon-calendar" /></svg></div>
+            <div class="metric-heading"><span>Сегодня</span><small id="today-count-small">0 из 0</small></div>
+            <strong class="metric-value" id="today-completed">0</strong>
+            <p>привычек выполнено</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon metric-icon-purple"><svg aria-hidden="true"><use href="#icon-award" /></svg></div>
+            <div class="metric-heading"><span>Лучшая серия</span><small>за всё время</small></div>
+            <strong class="metric-value" id="best-streak">0 <em>дней</em></strong>
+            <p id="best-habit-name">Пока нет данных</p>
+          </article>
+        </section>
+
+        <section class="analytics-grid" id="analytics" aria-label="Графики прогресса">
+          <article class="panel trend-panel">
+            <div class="panel-header">
+              <div>
+                <span class="panel-kicker">ДИНАМИКА</span>
+                <h2>Ритм выполнения</h2>
+              </div>
+              <span class="chart-legend"><i></i> Выполнено, %</span>
+            </div>
+            <div class="trend-chart" id="trend-chart" aria-label="График выполнения привычек"></div>
+          </article>
+
+          <article class="panel category-panel">
+            <div class="panel-header">
+              <div>
+                <span class="panel-kicker">БАЛАНС</span>
+                <h2>По категориям</h2>
+              </div>
+            </div>
+            <div class="category-chart-wrap">
+              <div class="donut-chart" id="category-donut" aria-label="Распределение выполнений по категориям">
+                <div><strong id="donut-total">0</strong><span>отметок</span></div>
+              </div>
+              <ul class="category-legend" id="category-legend"></ul>
+            </div>
+          </article>
+        </section>
+
+        <section class="workspace-grid">
+          <article class="panel habits-panel" id="habits">
+            <div class="panel-header habits-header">
+              <div>
+                <span class="panel-kicker">МОИ ПРИВЫЧКИ</span>
+                <h2>План на сегодня</h2>
+              </div>
+              <span class="completion-badge" id="completion-badge">0 / 0 готово</span>
+            </div>
+            <div class="habit-board-scroll" tabindex="0" aria-label="Таблица привычек за последние семь дней">
+              <div class="weekday-row" id="weekday-row" aria-hidden="true"></div>
+              <div class="habit-list" id="habit-list"></div>
+            </div>
+            <div class="empty-state" id="empty-state" hidden>
+              <span aria-hidden="true">🌱</span>
+              <h3>Здесь появится ваш ритм</h3>
+              <p>Добавьте первую привычку и отметьте выполнение.</p>
+              <button class="button button-primary" type="button" data-action="add-habit">Добавить привычку</button>
+            </div>
+          </article>
+
+          <article class="panel ai-panel" id="ai-coach">
+            <div class="ai-orb" aria-hidden="true">
+              <svg><use href="#icon-spark" /></svg>
+            </div>
+            <div class="ai-heading">
+              <div>
+                <span class="panel-kicker">AI-КОУЧ</span>
+                <h2>Разбор вашего ритма</h2>
+              </div>
+              <span class="ai-mode" id="ai-mode">ДЕМО</span>
+            </div>
+            <p class="ai-intro" id="ai-summary">Получите короткий разбор прогресса и три конкретных действия на следующую неделю.</p>
+
+            <div class="ai-score" id="ai-score" hidden>
+              <div class="score-circle"><strong id="ai-score-value">0</strong><span>/100</span></div>
+              <div><small>Индекс устойчивости</small><strong id="ai-trend-label">Стабильный ритм</strong></div>
+            </div>
+
+            <ul class="recommendation-list" id="recommendation-list"></ul>
+
+            <button class="button button-ai" id="generate-insights-button" type="button">
+              <svg aria-hidden="true"><use href="#icon-spark" /></svg>
+              <span>Проанализировать неделю</span>
+            </button>
+            <p class="ai-footnote">Ключ API используется только на сервере и не попадает в браузер.</p>
+          </article>
+        </section>
+
+        <section class="panel heatmap-panel" aria-labelledby="heatmap-title">
+          <div class="panel-header">
+            <div>
+              <span class="panel-kicker">ПОСЛЕДОВАТЕЛЬНОСТЬ</span>
+              <h2 id="heatmap-title">Карта активности</h2>
+            </div>
+            <div class="heatmap-scale" aria-label="Шкала интенсивности">
+              <span>Меньше</span><i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i><span>Больше</span>
+            </div>
+          </div>
+          <div class="heatmap-scroll">
+            <div class="heatmap" id="heatmap" aria-label="Активность за последние 12 недель"></div>
+          </div>
+        </section>
+
+        <footer class="app-footer">
+          <p><strong>Momentum</strong> · данные сохраняются автоматически</p>
+          <button type="button" id="export-button">Экспортировать данные</button>
+        </footer>
+      </main>
+    </div>
+
+    <dialog class="habit-dialog" id="habit-dialog" aria-labelledby="habit-dialog-title">
+      <form method="dialog" id="habit-form">
+        <div class="dialog-header">
+          <div>
+            <span class="panel-kicker">НАСТРОЙКА</span>
+            <h2 id="habit-dialog-title">Новая привычка</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="Закрыть">
+            <svg aria-hidden="true"><use href="#icon-close" /></svg>
+          </button>
+        </div>
+
+        <input type="hidden" id="habit-id" name="habitId" />
+        <label class="field">
+          <span>Название</span>
+          <input id="habit-name" name="name" type="text" maxlength="48" placeholder="Например, читать 20 минут" required />
+          <small>Короткое и конкретное действие</small>
+        </label>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>Категория</span>
+            <select id="habit-category" name="category">
+              <option value="health">Здоровье</option>
+              <option value="focus">Фокус</option>
+              <option value="growth">Развитие</option>
+              <option value="balance">Баланс</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Цель в неделю</span>
+            <select id="habit-target" name="targetPerWeek">
+              <option value="3">3 раза</option>
+              <option value="4">4 раза</option>
+              <option value="5" selected>5 раз</option>
+              <option value="6">6 раз</option>
+              <option value="7">Каждый день</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="icon-picker">
+          <legend>Иконка</legend>
+          <label><input type="radio" name="emoji" value="💧" checked /><span>💧</span></label>
+          <label><input type="radio" name="emoji" value="📚" /><span>📚</span></label>
+          <label><input type="radio" name="emoji" value="🏃" /><span>🏃</span></label>
+          <label><input type="radio" name="emoji" value="🧘" /><span>🧘</span></label>
+          <label><input type="radio" name="emoji" value="🎯" /><span>🎯</span></label>
+          <label><input type="radio" name="emoji" value="🌙" /><span>🌙</span></label>
+        </fieldset>
+
+        <div class="dialog-actions">
+          <button class="button button-danger" id="delete-habit-button" type="button" hidden>Удалить</button>
+          <span></span>
+          <button class="button button-ghost" type="button" data-close-dialog>Отмена</button>
+          <button class="button button-primary" type="submit">Сохранить</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="icon-grid" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" /></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12a9 9 0 11-5.3-8.2"/></symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7z"/></symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z"/><path d="M8.5 12l2.2 2.2 4.8-5"/></symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20 15.3A8.5 8.5 0 118.7 4 7 7 0 0020 15.3z"/></symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+      <symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3"/></symbol>
+      <symbol id="icon-flame" viewBox="0 0 24 24"><path d="M12 22c4.4 0 7-3 7-7.2 0-3.3-2-6.3-5.7-9.8.2 3-1.2 4.4-2.6 5.4.2-2.7-1-4.6-2.6-6.4.1 4.1-3.1 6.1-3.1 10.8C5 19 7.7 22 12 22z"/></symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/></symbol>
+      <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1 8 4.5-2 4.5 2-1-8"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16zM13.5 6.5l4 4"/></symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+    </svg>
+
+    <script type="module" src="/src/app.mjs"></script>
+  </body>
+</html>
